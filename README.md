@@ -1,12 +1,62 @@
-# React + Vite
+# 📚 Book Finder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Book Finder is a modern web application built with **React**, **Tailwind CSS**, and **ShadCN UI components** that allows users to search for books using the **Open Library API**. Users can explore books, apply multiple filters, and access editions or work pages for reading or browsing.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🛠 Features
 
-## Expanding the ESLint configuration
+### 1. **Search Functionality**
+- Users can search for books by **title**.
+- The search bar supports multiple filters:
+  - **Author**: Filter results by specific authors.
+  - **Subject**: Filter results by subject or category.
+  - **Publish Year**: Filter by first published year.
+  - **Edition Count**: Filter by number of editions.
+- Users can enter any combination of filters or just one filter without providing the book title.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+### 2. **Book Display**
+- Results are displayed as **cards** using ShadCN’s `Card` components.
+- Each card shows:
+  - Book cover
+  - Title
+  - Authors
+  - Short description: First published year, number of editions, and top 3 subjects
+- Clicking on a card opens a **modal** with detailed information about the book:
+  - Full subjects list
+  - Full edition count
+  - First published year
+  - Large cover image
+
+---
+
+### 3. **Pagination**
+- Search results are paginated.
+- Users can navigate between pages using `Prev` and `Next` buttons.
+- Pagination is dynamically calculated based on the **total number of results** returned by the Open Library API.
+
+---
+
+### 4. **Dark / Light Mode**
+- Dark mode is implemented using a **custom ThemeProvider** with ShadCN styling.
+- Users can toggle between:
+  - **Light Mode**
+  - **Dark Mode**
+  - **System Mode**
+- All components respond dynamically to the selected theme using **CSS variables** for backgrounds, text, cards, and buttons.
+
+---
+
+### 5. **Redirection to Open Library**
+- Open Library provides two main endpoints:
+  - **Edition page** (`/books/{edition_key}`): Specific copy of the book. Used when an **eBook is available** (`ebook_access` is `"full"` or `"borrow"`).
+  - **Work page** (`/works/{work_key}`): General information about the book. Used when **no digital copy** is available.
+- Logic for redirection:
+
+```js
+const readLink =
+  book.ebook_access === "full" || book.ebook_access === "borrow"
+    ? `https://openlibrary.org/books/${book.cover_edition_key}`
+    : `https://openlibrary.org${book.key}`;
